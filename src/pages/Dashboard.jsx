@@ -203,7 +203,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pb-24">
+    <div className="min-h-screen bg-gray-100 p-4 pb-28">
       {/* TOP BAR */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -267,7 +267,7 @@ export default function Dashboard() {
       </div>
 
       {/* STATS */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-xl shadow">
           <h2 className="font-bold text-lg">Total Study Time</h2>
           <p className="text-3xl font-bold mt-2">{totalStudyTime} mins</p>

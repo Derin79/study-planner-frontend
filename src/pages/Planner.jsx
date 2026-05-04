@@ -45,7 +45,7 @@ export default function Planner() {
       daysArr.push({
         dayName,
         fullLabel: `${dayName} (${formattedDate})`,
-        fullDate: d.toISOString().split("T")[0], // YYYY-MM-DD
+        fullDate: d.toISOString().split("T")[0],
       });
     }
 
@@ -65,7 +65,6 @@ export default function Planner() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // only pending tasks appear in timetable
       const pendingOnly = res.data.filter((task) => task.status === "pending");
       setTasks(pendingOnly);
     } catch (error) {
@@ -101,7 +100,6 @@ export default function Planner() {
 
       alert(res.data.message);
 
-      // guide move forward
       localStorage.setItem("guideStep", "timer");
 
       let count = parseInt(localStorage.getItem("guideCount") || "0");
@@ -168,9 +166,6 @@ export default function Planner() {
     return subjectColors[index];
   };
 
-  // ============================
-  // FIND TASK IN SLOT (FIXED)
-  // ============================
   const getTaskForSlot = (dayObj, hour) => {
     return tasks.find((task) =>
       task.assignedSlots?.some(
@@ -179,9 +174,6 @@ export default function Planner() {
     );
   };
 
-  // ============================
-  // CELL COLOR SYSTEM
-  // ============================
   const getTaskColor = (task) => {
     if (!task) return "";
 
@@ -193,7 +185,7 @@ export default function Planner() {
   };
 
   // =============================
-  // REMINDER SYSTEM (FIXED + STABLE)
+  // REMINDER SYSTEM
   // =============================
   useEffect(() => {
     const checkReminder = () => {
@@ -262,42 +254,68 @@ export default function Planner() {
     }
   };
 
-  // ============================
-  // GUIDE BOUNCE SYSTEM (FIXED)
-  // ============================
   const bounceClass =
     guideCount < 2 && guideStep === "planner"
       ? "animate-bounce ring-4 ring-purple-300"
       : "";
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pb-24">
-      <h1 className="text-2xl font-bold mb-4">Weekly Planner</h1>
+    <div className="min-h-screen bg-gray-100 p-4 pb-28">
+      <h1 className="text-2xl font-bold mb-2">Weekly Planner</h1>
 
-      <p className="text-gray-600 mb-4">
-        This shows tasks automatically placed into your free schedule.
+      <p className="text-gray-600 mb-4 text-sm">
+        Your tasks are automatically placed into your schedule.
       </p>
 
       <button
         onClick={generateWeeklyPlan}
-        className={`bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 mb-5 ${bounceClass}`}
+        className={`w-full bg-purple-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-purple-700 mb-5 ${bounceClass}`}
       >
         Generate Weekly Plan 🤖
       </button>
 
-      <div className="flex flex-wrap gap-4 mb-4 text-sm font-semibold">
-        <div className="flex items-center gap-2">
-          <span className="w-4 h-4 bg-red-600 rounded"></span>
-          Urgent Task (24hrs)
-        </div>
+      {/* MOBILE VIEW */}
+      <div className="block md:hidden space-y-5">
+        {days.map((dayObj) => (
+          <div
+            key={dayObj.fullDate}
+            className="bg-white rounded-2xl shadow p-4"
+          >
+            <h2 className="font-bold text-lg mb-3 text-gray-800">
+              {dayObj.fullLabel}
+            </h2>
 
-        <div className="flex items-center gap-2">
-          <span className="w-4 h-4 bg-purple-600 rounded"></span>
-          Different Subject Colors
-        </div>
+            <div className="space-y-3">
+              {Array.from({ length: 24 }).map((_, hour) => {
+                const task = getTaskForSlot(dayObj, hour);
+
+                return (
+                  <div
+                    key={hour}
+                    className={`flex justify-between items-center p-3 rounded-xl border ${
+                      task ? getTaskColor(task) : "bg-gray-50 text-gray-700"
+                    }`}
+                  >
+                    <p className="font-bold text-sm">{hour}:00</p>
+
+                    {task ? (
+                      <div className="text-right">
+                        <p className="text-sm font-bold">{task.title}</p>
+                        <p className="text-xs opacity-90">{task.subject}</p>
+                      </div>
+                    ) : (
+                      <p className="text-xs italic opacity-60">Free</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-xl shadow p-4">
+      {/* LAPTOP VIEW */}
+      <div className="hidden md:block overflow-x-auto bg-white rounded-xl shadow p-4">
         <table className="border-collapse w-full text-sm">
           <thead>
             <tr>
