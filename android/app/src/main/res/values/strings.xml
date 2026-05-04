@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Deer Planner</string>
+    <string name="title_activity_main">Deer Planner</string>
+    <string name="package_name">com.derin.deerplanner</string>
+    <string name="custom_url_scheme">com.derin.deerplanner</string>
+</resources>

@@ -8,9 +8,10 @@ import {
   Timer,
   Trophy,
   Settings,
+  MoreHorizontal,
+  Target,
+  X,
 } from "lucide-react";
-
-import { Target } from "lucide-react";
 
 export default function BottomNav() {
   const location = useLocation();
@@ -23,9 +24,10 @@ export default function BottomNav() {
     localStorage.getItem("firstTimeUser") || "false",
   );
 
+  const [showSheet, setShowSheet] = useState(false);
+
   useEffect(() => {
     const validSteps = ["tasks", "planner", "timer", "reflection", "dashboard"];
-
     const step = localStorage.getItem("guideStep");
 
     if (!validSteps.includes(step)) {
@@ -33,55 +35,119 @@ export default function BottomNav() {
     }
   }, []);
 
+  // Close sheet when route changes
+  useEffect(() => {
+    setShowSheet(false);
+  }, [location.pathname]);
+
   const navItems = [
     { path: "/dashboard", label: "Home", icon: <Home size={22} /> },
     { path: "/planner", label: "Plan", icon: <CalendarDays size={22} /> },
     { path: "/tasks", label: "Tasks", icon: <ListTodo size={22} /> },
     { path: "/timer", label: "Timer", icon: <Timer size={22} /> },
-    { path: "/rewards", label: "Rewards", icon: <Trophy size={22} /> },
+  ];
 
+  const moreItems = [
+    { path: "/rewards", label: "Rewards", icon: <Trophy size={22} /> },
     {
       path: "/achievements",
       label: "Achievements",
       icon: <Trophy size={22} />,
     },
-
     { path: "/quests", label: "Quests", icon: <Target size={22} /> },
     { path: "/settings", label: "Settings", icon: <Settings size={22} /> },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-lg flex justify-around items-center py-2 z-50">
-      {navItems.map((item) => {
-        const active = location.pathname === item.path;
+    <>
+      {/* DARK BACKDROP */}
+      {showSheet && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40"
+          onClick={() => setShowSheet(false)}
+        />
+      )}
 
-        // ✅ Bounce ONLY if user is new
-        const bounceClass =
-          firstTimeUser === "true"
-            ? guideStep === "tasks" && item.path === "/tasks"
-              ? "animate-bounce text-purple-700"
-              : guideStep === "planner" && item.path === "/planner"
-                ? "animate-bounce text-blue-700"
-                : guideStep === "timer" && item.path === "/timer"
-                  ? "animate-bounce text-green-700"
-                  : guideStep === "rewards" && item.path === "/rewards"
-                    ? "animate-bounce text-yellow-600"
-                    : ""
-            : "";
-
-        return (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`flex flex-col items-center text-xs font-semibold ${
-              active ? "text-purple-600" : "text-gray-500"
-            } ${bounceClass}`}
+      {/* SLIDING SHEET */}
+      <div
+        className={`fixed bottom-0 left-0 w-full bg-white rounded-t-3xl shadow-2xl z-50 transform transition-transform duration-300 ${
+          showSheet ? "translate-y-0" : "translate-y-full"
+        }`}
+        style={{ minHeight: "250px" }}
+      >
+        {/* SHEET HEADER */}
+        <div className="flex justify-between items-center px-5 py-4 border-b">
+          <h2 className="text-lg font-bold text-gray-800">More</h2>
+          <button
+            onClick={() => setShowSheet(false)}
+            className="p-2 rounded-full hover:bg-gray-100"
           >
-            {item.icon}
-            <span className="mt-1">{item.label}</span>
-          </Link>
-        );
-      })}
-    </div>
+            <X size={22} />
+          </button>
+        </div>
+
+        {/* SHEET MENU ITEMS */}
+        <div className="p-4 grid grid-cols-2 gap-4">
+          {moreItems.map((item) => {
+            const active = location.pathname === item.path;
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border font-semibold text-sm ${
+                  active
+                    ? "bg-purple-100 border-purple-300 text-purple-700"
+                    : "bg-white text-gray-700"
+                } hover:bg-gray-50`}
+              >
+                {item.icon}
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* MAIN BOTTOM NAV */}
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-lg flex justify-around items-center py-2 z-30">
+        {navItems.map((item) => {
+          const active = location.pathname === item.path;
+
+          const bounceClass =
+            firstTimeUser === "true"
+              ? guideStep === "tasks" && item.path === "/tasks"
+                ? "animate-bounce text-purple-700"
+                : guideStep === "planner" && item.path === "/planner"
+                  ? "animate-bounce text-blue-700"
+                  : guideStep === "timer" && item.path === "/timer"
+                    ? "animate-bounce text-green-700"
+                    : ""
+              : "";
+
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex flex-col items-center text-xs font-semibold ${
+                active ? "text-purple-600" : "text-gray-500"
+              } ${bounceClass}`}
+            >
+              {item.icon}
+              <span className="mt-1">{item.label}</span>
+            </Link>
+          );
+        })}
+
+        {/* MORE BUTTON */}
+        <button
+          onClick={() => setShowSheet(true)}
+          className="flex flex-col items-center text-xs font-semibold text-gray-500"
+        >
+          <MoreHorizontal size={22} />
+          <span className="mt-1">More</span>
+        </button>
+      </div>
+    </>
   );
 }
