@@ -203,7 +203,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 pb-28">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       {/* TOP BAR */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
@@ -230,7 +230,7 @@ export default function Dashboard() {
       )}
 
       {/* XP CARD */}
-      <div className="bg-white p-5 rounded-xl shadow mt-6 max-w-md">
+      <div className="bg-white/70 backdrop-blur-lg p-5 rounded-2xl shadow-lg mt-6 max-w-md border border-white/50">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-bold text-purple-700">Level {level}</h2>
           <p className="text-gray-600 font-semibold">{xp} XP</p>

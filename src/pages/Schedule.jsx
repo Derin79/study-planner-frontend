@@ -46,7 +46,7 @@ export default function Schedule() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 pb-28">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-2">Weekly Schedule</h1>
       <p className="text-gray-600 mb-4 text-sm">
         Tap blocks to mark as Busy or Free.
@@ -92,7 +92,7 @@ export default function Schedule() {
       </div>
 
       {/* LAPTOP VIEW */}
-      <div className="hidden md:block overflow-x-auto bg-white rounded-xl shadow p-4">
+      <div className="bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl border border-white/40 p-5">
         <table className="border-collapse w-full text-sm">
           <thead>
             <tr>

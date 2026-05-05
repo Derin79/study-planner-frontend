@@ -69,7 +69,7 @@ export default function Achievements() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pb-24">
+    <div className="min-h-screen p-4 pb-28">
       <h1 className="text-2xl font-bold mb-2">Achievements 🏆</h1>
       <p className="text-gray-600 mb-6">
         Level {level} • {xp} XP • {points} Points • {streak} Streak 🔥

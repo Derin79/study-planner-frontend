@@ -115,10 +115,10 @@ export default function Timer() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pb-24">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-4">Task Timer ⏳</h1>
 
-      <div className="bg-white shadow rounded-xl p-5 max-w-lg space-y-4">
+      <div className="bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl p-5 max-w-lg space-y-4 border border-white/50">
         {message && (
           <p className="bg-gray-100 p-3 rounded-lg font-semibold text-center text-purple-700">
             {message}

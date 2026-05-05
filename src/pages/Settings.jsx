@@ -11,10 +11,10 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pb-24">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-4">Settings</h1>
 
-      <div className="bg-white p-5 rounded-xl shadow max-w-lg">
+      <div className="bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl border border-white/40 p-5">
         <p className="font-semibold mb-3">User Profile</p>
 
         <p className="text-gray-700 mb-2">

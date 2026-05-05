@@ -260,7 +260,7 @@ export default function Planner() {
       : "";
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 pb-28">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-2">Weekly Planner</h1>
 
       <p className="text-gray-600 mb-4 text-sm">
@@ -269,7 +269,7 @@ export default function Planner() {
 
       <button
         onClick={generateWeeklyPlan}
-        className={`w-full bg-purple-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-purple-700 mb-5 ${bounceClass}`}
+        className={`w-full bg-purple-600 text-white px-4 py-3 rounded-2xl font-semibold hover:bg-purple-700 mb-5 shadow-lg ${bounceClass}`}
       >
         Generate Weekly Plan 🤖
       </button>
@@ -279,20 +279,22 @@ export default function Planner() {
         {days.map((dayObj) => (
           <div
             key={dayObj.fullDate}
-            className="bg-white rounded-2xl shadow p-4"
+            className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-4 border border-white/40"
           >
             <h2 className="font-bold text-lg mb-3 text-gray-800">
               {dayObj.fullLabel}
             </h2>
 
             <div className="space-y-3">
-              {Array.from({ length: 24 }).map((_, hour) => {
+              {/* SHOW ONLY 6AM - 11PM */}
+              {Array.from({ length: 18 }).map((_, index) => {
+                const hour = index + 6;
                 const task = getTaskForSlot(dayObj, hour);
 
                 return (
                   <div
                     key={hour}
-                    className={`flex justify-between items-center p-3 rounded-xl border ${
+                    className={`flex justify-between items-center p-4 rounded-2xl border shadow-sm ${
                       task ? getTaskColor(task) : "bg-gray-50 text-gray-700"
                     }`}
                   >
@@ -300,8 +302,12 @@ export default function Planner() {
 
                     {task ? (
                       <div className="text-right">
-                        <p className="text-sm font-bold">{task.title}</p>
-                        <p className="text-xs opacity-90">{task.subject}</p>
+                        <p className="text-sm font-bold leading-tight">
+                          {task.title}
+                        </p>
+                        <p className="text-xs opacity-90 leading-tight">
+                          {task.subject}
+                        </p>
                       </div>
                     ) : (
                       <p className="text-xs italic opacity-60">Free</p>
@@ -315,8 +321,8 @@ export default function Planner() {
       </div>
 
       {/* LAPTOP VIEW */}
-      <div className="hidden md:block overflow-x-auto bg-white rounded-xl shadow p-4">
-        <table className="border-collapse w-full text-sm">
+      <div className="hidden md:block overflow-x-auto bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-3 border border-white/50">
+        <table className="border-collapse w-full text-[12px] min-w-[900px]">
           <thead>
             <tr>
               <th className="border p-2 bg-gray-200">Hour</th>
@@ -346,8 +352,10 @@ export default function Planner() {
                     >
                       {task ? (
                         <div>
-                          <p className="text-xs font-bold">{task.title}</p>
-                          <p className="text-[10px] opacity-90">
+                          <p className="text-[11px] font-bold leading-tight">
+                            {task.title}
+                          </p>
+                          <p className="text-[10px] opacity-90 leading-tight">
                             {task.subject}
                           </p>
                         </div>

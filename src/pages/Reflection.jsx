@@ -100,10 +100,10 @@ export default function Reflection() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-4">Reflection ✍️</h1>
 
-      <div className="bg-white p-6 rounded-xl shadow space-y-4">
+      <div className="bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl border border-white/40 p-5">
         <div>
           <label className="font-semibold">Did you complete the task?</label>
           <select

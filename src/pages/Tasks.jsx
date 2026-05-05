@@ -156,7 +156,7 @@ export default function Tasks() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pb-24">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-4">Study Tasks</h1>
 
       {message && (
@@ -167,7 +167,7 @@ export default function Tasks() {
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow rounded-xl p-4 space-y-3 max-w-lg"
+        className="bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl p-4 space-y-3 max-w-lg border border-white/50"
       >
         <input
           type="text"
@@ -222,9 +222,7 @@ export default function Tasks() {
           tasks.map((task) => (
             <div
               key={task._id}
-              className={`bg-white shadow rounded-xl p-4 flex justify-between items-center ${getCardBorder(
-                task,
-              )}`}
+              className={`bg-white shadow rounded-xl p-4 flex justify-between items-center ${getCardBorder(task)}`}
             >
               <div>
                 <h3 className="font-bold">{task.title}</h3>
@@ -253,9 +251,7 @@ export default function Tasks() {
               </div>
 
               <span
-                className={`text-sm font-bold capitalize ${getStatusColor(
-                  task.status,
-                )}`}
+                className={`text-sm font-bold capitalize ${getStatusColor(task.status)}`}
               >
                 {task.status}
               </span>

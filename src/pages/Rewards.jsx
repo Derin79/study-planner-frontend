@@ -61,10 +61,10 @@ export default function Rewards() {
   const canBuy = data.points >= 50;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pb-24">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-4">Rewards Shop 🎁</h1>
 
-      <div className="bg-white rounded-xl shadow p-5 space-y-2 mb-6">
+      <div className="bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl border border-white/40 p-5">
         <p>⭐ Points: {data.points}</p>
         <p>🔥 Streak: {data.streak}</p>
         <p>🧠 XP: {data.xp}</p>

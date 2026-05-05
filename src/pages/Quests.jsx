@@ -83,7 +83,7 @@ export default function Quests() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pb-24">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-4">Daily Quests 🎯</h1>
 
       <p className="text-gray-600 mb-5">

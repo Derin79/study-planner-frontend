@@ -70,17 +70,17 @@ export default function BottomNav() {
 
       {/* SLIDING SHEET */}
       <div
-        className={`fixed bottom-0 left-0 w-full bg-white rounded-t-3xl shadow-2xl z-50 transform transition-transform duration-300 ${
+        className={`fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl rounded-t-3xl shadow-2xl z-50 transform transition-transform duration-300 border border-white/40 ${
           showSheet ? "translate-y-0" : "translate-y-full"
         }`}
         style={{ minHeight: "250px" }}
       >
         {/* SHEET HEADER */}
-        <div className="flex justify-between items-center px-5 py-4 border-b">
+        <div className="flex justify-between items-center px-5 py-4 border-b border-white/30">
           <h2 className="text-lg font-bold text-gray-800">More</h2>
           <button
             onClick={() => setShowSheet(false)}
-            className="p-2 rounded-full hover:bg-gray-100"
+            className="p-2 rounded-full hover:bg-white/60"
           >
             <X size={22} />
           </button>
@@ -95,11 +95,11 @@ export default function BottomNav() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border font-semibold text-sm ${
+                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border font-semibold text-sm shadow-sm ${
                   active
-                    ? "bg-purple-100 border-purple-300 text-purple-700"
-                    : "bg-white text-gray-700"
-                } hover:bg-gray-50`}
+                    ? "bg-purple-200/70 border-purple-300 text-purple-800"
+                    : "bg-white/60 border-white/40 text-gray-700"
+                } hover:bg-white/70`}
               >
                 {item.icon}
                 {item.label}
@@ -110,7 +110,7 @@ export default function BottomNav() {
       </div>
 
       {/* MAIN BOTTOM NAV */}
-      <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-lg flex justify-around items-center py-2 z-30">
+      <div className="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-lg border-t border-white/40 shadow-lg flex justify-around items-center py-2 z-30">
         {navItems.map((item) => {
           const active = location.pathname === item.path;
 
@@ -130,7 +130,7 @@ export default function BottomNav() {
               key={item.path}
               to={item.path}
               className={`flex flex-col items-center text-xs font-semibold ${
-                active ? "text-purple-600" : "text-gray-500"
+                active ? "text-purple-700" : "text-gray-500"
               } ${bounceClass}`}
             >
               {item.icon}
