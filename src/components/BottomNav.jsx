@@ -126,14 +126,14 @@ export default function BottomNav() {
 
           const bounceClass =
             firstTimeUser === "true"
-              ? guideStep === "dashboard" && item.path === "/dashboard"
+              ? guideStep === "tasks" && item.path === "/tasks"
                 ? "animate-bounce text-purple-700"
-                : guideStep === "tasks" && item.path === "/tasks"
-                  ? "animate-bounce text-purple-700"
-                  : guideStep === "planner" && item.path === "/planner"
-                    ? "animate-bounce text-blue-700"
-                    : guideStep === "timer" && item.path === "/timer"
-                      ? "animate-bounce text-green-700"
+                : guideStep === "planner" && item.path === "/planner"
+                  ? "animate-bounce text-blue-700"
+                  : guideStep === "timer" && item.path === "/timer"
+                    ? "animate-bounce text-green-700"
+                    : guideStep === "dashboard" && item.path === "/dashboard"
+                      ? "animate-bounce text-purple-700"
                       : ""
               : "";
 

@@ -47,7 +47,7 @@ export default function Onboarding() {
 
       // ✅ START GUIDE FOR NEW USERS
       localStorage.setItem("firstTimeUser", "true");
-      localStorage.setItem("guideStep", "dashboard");
+      localStorage.setItem("guideStep", "tasks");
       localStorage.setItem("guideCount", "0");
 
       setTimeout(() => navigate("/dashboard"), 1000);

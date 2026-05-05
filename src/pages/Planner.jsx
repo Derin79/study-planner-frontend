@@ -101,6 +101,9 @@ export default function Planner() {
       alert(res.data.message);
 
       localStorage.setItem("guideStep", "timer");
+      if (count >= 2) {
+        localStorage.setItem("guideStep", "dashboard");
+      }
 
       let count = parseInt(localStorage.getItem("guideCount") || "0");
 
@@ -274,50 +277,64 @@ export default function Planner() {
         Generate Weekly Plan 🤖
       </button>
 
-      {/* MOBILE VIEW */}
-      <div className="block md:hidden space-y-5">
-        {days.map((dayObj) => (
-          <div
-            key={dayObj.fullDate}
-            className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-4 border border-white/40"
-          >
-            <h2 className="font-bold text-lg mb-3 text-gray-800">
-              {dayObj.fullLabel}
-            </h2>
-
-            <div className="space-y-3">
-              {/* SHOW ONLY 6AM - 11PM */}
-              {Array.from({ length: 18 }).map((_, index) => {
-                const hour = index + 6;
-                const task = getTaskForSlot(dayObj, hour);
-
-                return (
-                  <div
-                    key={hour}
-                    className={`flex justify-between items-center p-4 rounded-2xl border shadow-sm ${
-                      task ? getTaskColor(task) : "bg-gray-50 text-gray-700"
-                    }`}
-                  >
-                    <p className="font-bold text-sm">{hour}:00</p>
-
-                    {task ? (
-                      <div className="text-right">
-                        <p className="text-sm font-bold leading-tight">
-                          {task.title}
-                        </p>
-                        <p className="text-xs opacity-90 leading-tight">
-                          {task.subject}
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="text-xs italic opacity-60">Free</p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+      {/* MOBILE TIMETABLE VIEW */}
+      <div className="block md:hidden overflow-x-auto">
+        <div className="min-w-[650px] bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg border border-white/40 p-2">
+          {/* HEADER */}
+          <div className="grid grid-cols-8 text-xs font-bold text-center mb-2">
+            <div className="text-gray-600">Time</div>
+            {days.map((d) => (
+              <div key={d.fullDate} className="text-gray-700">
+                {d.dayName}
+              </div>
+            ))}
           </div>
-        ))}
+
+          {/* BODY */}
+          {Array.from({ length: 18 }).map((_, index) => {
+            const hour = index + 6;
+
+            return (
+              <div key={hour} className="grid grid-cols-8 text-[11px]">
+                {/* TIME COLUMN */}
+                <div className="border p-2 font-semibold bg-gray-100 text-center">
+                  {hour}:00
+                </div>
+
+                {/* DAYS */}
+                {days.map((dayObj) => {
+                  const task = getTaskForSlot(dayObj, hour);
+
+                  return (
+                    <div
+                      key={dayObj.fullDate + hour}
+                      className={`border p-2 text-center ${
+                        task
+                          ? `${getTaskColor(task)} rounded-md`
+                          : "bg-gray-50 text-gray-400"
+                      }`}
+                    >
+                      {task ? (
+                        <div className="leading-tight">
+                          <p className="font-bold text-[10px]">
+                            {task.title.length > 10
+                              ? task.title.slice(0, 10) + "…"
+                              : task.title}
+                          </p>
+                          <p className="text-[9px] opacity-80">
+                            {task.subject}
+                          </p>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* LAPTOP VIEW */}

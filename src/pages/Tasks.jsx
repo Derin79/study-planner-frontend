@@ -78,6 +78,8 @@ export default function Tasks() {
 
       if (guideCount < 2) {
         localStorage.setItem("guideStep", "planner");
+      } else {
+        localStorage.setItem("guideStep", "");
       }
 
       setMessage("Task created successfully ✅");
