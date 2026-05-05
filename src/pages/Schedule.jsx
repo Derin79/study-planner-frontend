@@ -53,7 +53,7 @@ export default function Schedule() {
       </p>
 
       {message && (
-        <p className="bg-white p-3 rounded-xl shadow mb-4 font-semibold">
+        <p className="bg-white/70 backdrop-blur-lg p-3 rounded-xl shadow mb-4 font-semibold border border-white/40">
           {message}
         </p>
       )}
@@ -61,7 +61,10 @@ export default function Schedule() {
       {/* MOBILE VIEW */}
       <div className="block md:hidden space-y-5">
         {days.map((day) => (
-          <div key={day} className="bg-white rounded-2xl shadow p-4">
+          <div
+            key={day}
+            className="bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-4 border border-white/40"
+          >
             <h2 className="font-bold text-lg mb-3">{day}</h2>
 
             <div className="grid grid-cols-4 gap-2">
@@ -76,7 +79,7 @@ export default function Schedule() {
                   <button
                     key={hour}
                     onClick={() => toggleStatus(day, hour)}
-                    className={`p-2 rounded-lg text-xs font-bold ${
+                    className={`p-2 rounded-xl text-xs font-bold shadow-sm ${
                       isBusy
                         ? "bg-red-500 text-white"
                         : "bg-green-200 text-gray-900"
@@ -91,14 +94,14 @@ export default function Schedule() {
         ))}
       </div>
 
-      {/* LAPTOP VIEW */}
-      <div className="bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl border border-white/40 p-5">
-        <table className="border-collapse w-full text-sm">
+      {/* DESKTOP TABLE VIEW */}
+      <div className="hidden md:block overflow-x-auto bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl border border-white/40 p-5">
+        <table className="border-collapse w-full text-sm min-w-[800px]">
           <thead>
             <tr>
-              <th className="border p-2">Hour</th>
+              <th className="border p-2 bg-gray-100">Hour</th>
               {days.map((day) => (
-                <th key={day} className="border p-2">
+                <th key={day} className="border p-2 bg-gray-100">
                   {day}
                 </th>
               ))}
@@ -108,7 +111,9 @@ export default function Schedule() {
           <tbody>
             {Array.from({ length: 24 }).map((_, hour) => (
               <tr key={hour}>
-                <td className="border p-2 font-semibold">{hour}:00</td>
+                <td className="border p-2 font-semibold bg-gray-50">
+                  {hour}:00
+                </td>
 
                 {days.map((day) => {
                   const cell = schedule.find(
@@ -137,7 +142,7 @@ export default function Schedule() {
 
       <button
         onClick={saveSchedule}
-        className="mt-5 w-full bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700"
+        className="mt-5 w-full bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-700 shadow-lg"
       >
         Save Schedule
       </button>

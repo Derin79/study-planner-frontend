@@ -16,7 +16,6 @@ export default function MotivationPopup({
   useEffect(() => {
     let messages = [];
 
-    // 🔥 PRESSURE MODE
     if (!studiedToday && pendingTasks > 0) {
       messages.push(
         "🚨 You haven’t studied today. Start NOW before the day ends.",
@@ -27,7 +26,6 @@ export default function MotivationPopup({
       );
     }
 
-    // ❄️ MISSED TASK WARNING
     if (missedTasks > 0) {
       messages.push("😤 You missed tasks. That’s dangerous. Fix it today.");
       messages.push(
@@ -35,7 +33,6 @@ export default function MotivationPopup({
       );
     }
 
-    // ⏰ URGENT TASK WARNING
     if (urgentTasks > 0) {
       messages.push(
         "⏳ Deadline is close. Your urgent tasks must be done TODAY.",
@@ -43,7 +40,6 @@ export default function MotivationPopup({
       messages.push("🚨 Urgent tasks detected! Stop delaying and focus now.");
     }
 
-    // 🔥 STREAK BOOST
     if (streak >= 14) {
       messages.push("👑 14+ days streak? You are elite. Keep going!");
       messages.push("🔥 You are becoming unstoppable. Maintain the streak!");
@@ -60,7 +56,6 @@ export default function MotivationPopup({
       messages.push("🚀 Start now. One session today changes everything.");
     }
 
-    // 🎯 LEVEL CLOSE CHECK
     const xpToNext = 100 - (xp % 100);
 
     if (xpToNext <= 15) {
@@ -72,7 +67,6 @@ export default function MotivationPopup({
       messages.push("⭐ Every session counts. Earn XP today.");
     }
 
-    // If nothing added
     if (messages.length === 0) {
       messages = [
         "😊 Today is a fresh chance to improve yourself.",
@@ -84,22 +78,23 @@ export default function MotivationPopup({
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     setQuote(randomMessage);
 
-    // ✅ AUTO CLOSE AFTER 30 SECONDS
     const timer = setTimeout(() => {
       onClose();
-    }, 30000);
+    }, 15000);
 
     return () => clearTimeout(timer);
   }, [streak, xp, pendingTasks, missedTasks, urgentTasks, studiedToday]);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-      <div className="bg-white w-full max-w-md p-6 rounded-2xl shadow-xl border-2 border-purple-200 animate-[pop_0.4s_ease-in-out]">
+      <div className="bg-white/80 backdrop-blur-xl w-full max-w-md p-6 rounded-2xl shadow-2xl border border-white/40 animate-[pop_0.4s_ease-in-out]">
         <h2 className="text-xl font-bold text-purple-700">Hey {name}! 🦌✨</h2>
 
-        <p className="text-gray-800 mt-3 font-semibold text-lg">{quote}</p>
+        <p className="text-gray-800 mt-3 font-semibold text-lg leading-snug">
+          {quote}
+        </p>
 
-        <div className="mt-5 bg-gray-100 p-4 rounded-xl space-y-2">
+        <div className="mt-5 bg-white/70 p-4 rounded-xl space-y-2 border border-white/40">
           <p className="font-semibold text-gray-800">
             🔥 Streak:{" "}
             <span className="text-orange-600 font-bold">{streak} days</span>
@@ -113,7 +108,7 @@ export default function MotivationPopup({
             ⚡ XP: <span className="text-green-700 font-bold">{xp}</span>
           </p>
 
-          <div className="w-full bg-gray-300 rounded-full h-3 mt-2 overflow-hidden">
+          <div className="w-full bg-gray-200 rounded-full h-3 mt-2 overflow-hidden">
             <div
               className="bg-gradient-to-r from-purple-600 to-blue-600 h-3 rounded-full transition-all duration-500"
               style={{ width: `${xp % 100}%` }}
@@ -133,14 +128,14 @@ export default function MotivationPopup({
 
         <button
           onClick={onClose}
-          className="mt-6 w-full bg-purple-600 text-white py-3 rounded-xl font-bold hover:bg-purple-700 transition"
+          className="mt-6 w-full bg-purple-600 text-white py-3 rounded-xl font-bold hover:bg-purple-700 transition shadow-lg"
         >
           Start Studying Now 💪
         </button>
 
         <button
           onClick={onClose}
-          className="mt-3 w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-300 transition"
+          className="mt-3 w-full bg-white/70 text-gray-700 py-3 rounded-xl font-bold hover:bg-white transition border border-white/40"
         >
           Later 😅
         </button>

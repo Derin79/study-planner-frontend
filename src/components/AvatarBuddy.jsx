@@ -6,6 +6,10 @@ export default function AvatarBuddy({ completed, missed, streak, urgent }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // ✅ Wait until motivation popup has already shown
+    const popupShown = sessionStorage.getItem("motivationPopupShown");
+    if (!popupShown) return;
+
     let msg = "";
 
     if (missed > 0) {
@@ -30,7 +34,6 @@ export default function AvatarBuddy({ completed, missed, streak, urgent }) {
 
     setMessage(msg);
 
-    // show only once per day
     const today = new Date().toISOString().split("T")[0];
     const lastShownDate = localStorage.getItem("buddyShownDate");
 
@@ -49,8 +52,8 @@ export default function AvatarBuddy({ completed, missed, streak, urgent }) {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 z-50 w-80 max-w-[90%]">
-      <div className="bg-white shadow-2xl rounded-2xl border p-4 flex gap-4 relative animate-slideIn">
+    <div className="fixed bottom-24 right-5 z-40 w-80 max-w-[90%]">
+      <div className="bg-white/80 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/40 p-4 flex gap-4 relative animate-slideIn">
         <img
           src={deerImg}
           alt="Study Buddy"
@@ -59,7 +62,7 @@ export default function AvatarBuddy({ completed, missed, streak, urgent }) {
 
         <div className="flex-1">
           <p className="font-bold text-gray-800 text-sm">Study Buddy</p>
-          <p className="text-sm text-gray-600 mt-1">{message}</p>
+          <p className="text-sm text-gray-600 mt-1 leading-snug">{message}</p>
         </div>
 
         <button

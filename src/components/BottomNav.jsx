@@ -35,6 +35,16 @@ export default function BottomNav() {
     }
   }, []);
 
+  // ✅ LIVE UPDATE guideStep + firstTimeUser
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGuideStep(localStorage.getItem("guideStep") || "");
+      setFirstTimeUser(localStorage.getItem("firstTimeUser") || "false");
+    }, 300);
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Close sheet when route changes
   useEffect(() => {
     setShowSheet(false);
@@ -116,13 +126,15 @@ export default function BottomNav() {
 
           const bounceClass =
             firstTimeUser === "true"
-              ? guideStep === "tasks" && item.path === "/tasks"
+              ? guideStep === "dashboard" && item.path === "/dashboard"
                 ? "animate-bounce text-purple-700"
-                : guideStep === "planner" && item.path === "/planner"
-                  ? "animate-bounce text-blue-700"
-                  : guideStep === "timer" && item.path === "/timer"
-                    ? "animate-bounce text-green-700"
-                    : ""
+                : guideStep === "tasks" && item.path === "/tasks"
+                  ? "animate-bounce text-purple-700"
+                  : guideStep === "planner" && item.path === "/planner"
+                    ? "animate-bounce text-blue-700"
+                    : guideStep === "timer" && item.path === "/timer"
+                      ? "animate-bounce text-green-700"
+                      : ""
               : "";
 
           return (

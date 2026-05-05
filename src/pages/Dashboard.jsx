@@ -103,15 +103,11 @@ export default function Dashboard() {
   const pendingTasks = tasks.filter((t) => t.status === "pending").length;
   const missedTasks = tasks.filter((t) => t.status === "missed").length;
 
-  // ✅ Studied today?
   const today = new Date().toDateString();
   const studiedToday = records.some(
     (rec) => new Date(rec.start).toDateString() === today && rec.completed,
   );
 
-  // ============================
-  // ✅ SUBJECT BREAKDOWN FIX
-  // ============================
   const subjectMap = {};
   records.forEach((rec) => {
     const subject = rec.taskId?.subject || "Unknown";
@@ -119,17 +115,12 @@ export default function Dashboard() {
       (subjectMap[subject] || 0) + (rec.actualDuration || 0);
   });
 
-  // Convert subjectMap to sorted array
   const subjectArray = Object.entries(subjectMap).sort((a, b) => b[1] - a[1]);
-
-  // Take Top 5 subjects
   const topSubjects = subjectArray.slice(0, 5);
 
-  // Remaining subjects become "Others"
   const othersSubjects = subjectArray.slice(5);
   const othersMinutes = othersSubjects.reduce((sum, item) => sum + item[1], 0);
 
-  // Final chart labels + data
   const subjectLabels = topSubjects.map((s) => s[0]);
   const subjectMinutes = topSubjects.map((s) => s[1]);
 
@@ -138,7 +129,6 @@ export default function Dashboard() {
     subjectMinutes.push(othersMinutes);
   }
 
-  // urgent tasks
   const urgentTasks = tasks.filter((t) => {
     if (t.status !== "pending") return false;
 
@@ -150,9 +140,6 @@ export default function Dashboard() {
     return diffHours <= 24 && diffHours > 0;
   });
 
-  // ============================
-  // ✅ TASK COMPLETION BAR
-  // ============================
   const barData = {
     labels: ["Completed Sessions", "Pending Tasks", "Missed Tasks"],
     datasets: [
@@ -164,9 +151,6 @@ export default function Dashboard() {
     ],
   };
 
-  // ============================
-  // ✅ SUBJECT BREAKDOWN BAR
-  // ============================
   const colors = [
     "#6366F1",
     "#EC4899",
@@ -190,7 +174,7 @@ export default function Dashboard() {
   };
 
   const subjectBarOptions = {
-    indexAxis: "y", // ✅ horizontal bar chart
+    indexAxis: "y",
     responsive: true,
     plugins: {
       legend: { display: false },
@@ -202,14 +186,17 @@ export default function Dashboard() {
     },
   };
 
+  const glassCard =
+    "bg-white/70 backdrop-blur-lg p-5 rounded-2xl shadow-lg border border-white/40";
+
   return (
     <div className="min-h-screen bg-transparent p-4 pb-28">
-      {/* TOP BAR */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+
         <button
           onClick={handleLogout}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700"
+          className="bg-red-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-red-700 shadow"
         >
           Logout
         </button>
@@ -229,8 +216,7 @@ export default function Dashboard() {
         />
       )}
 
-      {/* XP CARD */}
-      <div className="bg-white/70 backdrop-blur-lg p-5 rounded-2xl shadow-lg mt-6 max-w-md border border-white/50">
+      <div className={`${glassCard} mt-6 max-w-md`}>
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-bold text-purple-700">Level {level}</h2>
           <p className="text-gray-600 font-semibold">{xp} XP</p>
@@ -249,64 +235,62 @@ export default function Dashboard() {
       </div>
 
       {user && (
-        <p className="text-gray-600 mt-4">
+        <p className="text-gray-700 mt-4">
           Welcome, <span className="font-semibold">{user.name}</span> 🎉
         </p>
       )}
 
       <button
         onClick={enableNotifications}
-        className="mt-6 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700"
+        className="mt-5 bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-blue-700 shadow"
       >
         Enable Notifications
       </button>
 
-      <div className="bg-white p-5 rounded-xl shadow mt-6 max-w-md">
-        <h2 className="font-bold text-lg">Freeze Count</h2>
-        <p className="text-3xl font-bold mt-2">{streakFreeze} ❄️</p>
+      <div className={`${glassCard} mt-6 max-w-md`}>
+        <h2 className="font-bold text-lg">Freeze Count ❄️</h2>
+        <p className="text-3xl font-bold mt-2">{streakFreeze}</p>
       </div>
 
-      {/* STATS */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-xl shadow">
+        <div className={glassCard}>
           <h2 className="font-bold text-lg">Total Study Time</h2>
           <p className="text-3xl font-bold mt-2">{totalStudyTime} mins</p>
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow">
+        <div className={glassCard}>
           <h2 className="font-bold text-lg">Reward Points</h2>
           <p className="text-3xl font-bold mt-2">{points}</p>
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow">
+        <div className={glassCard}>
           <h2 className="font-bold text-lg">Streak</h2>
           <p className="text-3xl font-bold mt-2">{streak} days</p>
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow">
+        <div className={glassCard}>
           <h2 className="font-bold text-lg">Completed Sessions</h2>
           <p className="text-3xl font-bold mt-2">{completedSessions}</p>
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow">
+        <div className={glassCard}>
           <h2 className="font-bold text-lg">Pending Tasks</h2>
           <p className="text-3xl font-bold mt-2">{pendingTasks}</p>
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow">
+        <div className={glassCard}>
           <h2 className="font-bold text-lg">Missed Tasks</h2>
           <p className="text-3xl font-bold mt-2">{missedTasks}</p>
         </div>
       </div>
 
-      {/* CHARTS */}
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white p-5 rounded-xl shadow">
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className={glassCard}>
           <h2 className="font-bold text-lg mb-4">Task Completion</h2>
           <Bar data={barData} />
         </div>
 
-        <div className="bg-white p-5 rounded-xl shadow">
+        <div className={glassCard}>
           <h2 className="font-bold text-lg mb-4">
             Subject Breakdown (Top 5 Subjects)
           </h2>
@@ -314,7 +298,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* AvatarBuddy */}
       <AvatarBuddy
         completed={completedSessions}
         missed={missedTasks}
