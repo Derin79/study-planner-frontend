@@ -198,47 +198,56 @@ export default function Planner() {
       const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
 
+      const nowMinutes = currentHour * 60 + currentMinute;
+
       tasks.forEach((task) => {
         task.assignedSlots?.forEach((slot) => {
           if (slot.fullDate !== todayDate) return;
 
-          const nowMinutes = currentHour * 60 + currentMinute;
           const startMinutes = slot.hour * 60;
-
           const diff = startMinutes - nowMinutes;
 
-          const reminderTimes = [60, 30, 5, 0];
+          // ✅ RANGE-BASED SYSTEM (prevents missed reminders)
+          const reminderWindows = [
+            { target: 60, range: 2 },
+            { target: 30, range: 2 },
+            { target: 5, range: 1 },
+            { target: 0, range: 1 },
+          ];
 
-          if (reminderTimes.includes(diff)) {
-            const reminderKey = `${task._id}-${slot.fullDate}-${slot.hour}-${diff}`;
+          reminderWindows.forEach(({ target, range }) => {
+            if (diff <= target && diff >= target - range) {
+              const reminderKey = `${task._id}-${slot.fullDate}-${slot.hour}-${target}`;
 
-            if (shownReminders.current.has(reminderKey)) return;
+              if (shownReminders.current.has(reminderKey)) return;
 
-            shownReminders.current.add(reminderKey);
+              shownReminders.current.add(reminderKey);
 
-            setReminderTask(task);
-            setMinutesLeft(diff);
-            setShowReminder(true);
+              setReminderTask(task);
+              setMinutesLeft(target);
+              setShowReminder(true);
 
-            if (audioRef.current) {
-              audioRef.current.pause();
-              audioRef.current.currentTime = 0;
+              // stop previous sound
+              if (audioRef.current) {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+              }
+
+              const audio = new Audio(reminderSound);
+              audioRef.current = audio;
+
+              audio.play().catch(() => console.log("Sound blocked"));
+
+              if (Notification.permission === "granted") {
+                new Notification("Study Reminder ⏰", {
+                  body:
+                    target === 0
+                      ? `${task.title} starts NOW!`
+                      : `${task.title} starts in ${target} minutes`,
+                });
+              }
             }
-
-            const audio = new Audio(reminderSound);
-            audioRef.current = audio;
-
-            audio.play().catch(() => console.log("Sound blocked by browser"));
-
-            if (Notification.permission === "granted") {
-              new Notification("Study Reminder ⏰", {
-                body:
-                  diff === 0
-                    ? `${task.title} starts NOW!`
-                    : `${task.title} starts in ${diff} minutes`,
-              });
-            }
-          }
+          });
         });
       });
     };
@@ -247,20 +256,6 @@ export default function Planner() {
 
     return () => clearInterval(interval);
   }, [tasks]);
-
-  const closeReminder = () => {
-    setShowReminder(false);
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-  };
-
-  const bounceClass =
-    guideCount < 2 && guideStep === "planner"
-      ? "animate-bounce ring-4 ring-purple-300"
-      : "";
 
   return (
     <div className="min-h-screen bg-transparent p-4 pb-28">
