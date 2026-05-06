@@ -43,6 +43,9 @@ export default function Onboarding() {
         },
       );
 
+      // ✅ SAVE FOR PLANNER
+      localStorage.setItem("preferredStudyTime", preferredStudyTime);
+
       setMessage("Preferences saved successfully ✅");
 
       // ✅ START GUIDE FOR NEW USERS

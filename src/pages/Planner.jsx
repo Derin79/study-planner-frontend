@@ -23,7 +23,28 @@ export default function Planner() {
   const audioRef = useRef(null);
 
   // ============================
-  // NEXT 7 DAYS HEADER SYSTEM
+  // SMART TIME RANGE SYSTEM 🔥
+  // ============================
+  const timeRanges = {
+    morning: [6, 12],
+    afternoon: [12, 17],
+    evening: [17, 21],
+    night: [21, 23],
+  };
+
+  const preferredStudyTime =
+    localStorage.getItem("preferredStudyTime") || "evening";
+
+  const [startPref, endPref] = timeRanges[preferredStudyTime] || [6, 23];
+
+  const hoursToShow = [];
+
+  for (let h = startPref; h <= endPref; h++) {
+    hoursToShow.push(h);
+  }
+
+  // ============================
+  // NEXT 7 DAYS
   // ============================
   const getNext7Days = () => {
     const today = new Date();
@@ -65,10 +86,10 @@ export default function Planner() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const pendingOnly = res.data.filter((task) => task.status === "pending");
+      const pendingOnly = res.data.filter((t) => t.status === "pending");
       setTasks(pendingOnly);
     } catch (error) {
-      console.log("FETCH TASKS ERROR:", error.response?.data || error.message);
+      console.log("FETCH TASKS ERROR:", error.message);
     }
   };
 
@@ -107,7 +128,6 @@ export default function Planner() {
         localStorage.setItem("guideCount", count.toString());
       }
 
-      // guide step logic
       if (count >= 2) {
         localStorage.setItem("guideStep", "dashboard");
         setGuideStep("");
@@ -117,39 +137,25 @@ export default function Planner() {
       }
 
       setGuideCount(count);
-
       fetchTasks();
     } catch (error) {
-      console.log("PLANNER ERROR:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "Failed to generate weekly plan");
+      alert("Failed to generate weekly plan");
     }
   };
 
   // ============================
-  // URGENT CHECK
+  // HELPERS
   // ============================
-  const isUrgentTask = (deadline) => {
-    const now = new Date();
-    const d = new Date(deadline);
 
-    const diffHours = (d - now) / (1000 * 60 * 60);
-
-    return diffHours <= 24 && diffHours > 0;
-  };
-
-  // ============================
-  // SUBJECT COLOR SYSTEM
-  // ============================
   const subjectColors = [
-    "bg-blue-600 text-white",
-    "bg-purple-600 text-white",
-    "bg-green-600 text-white",
-    "bg-yellow-500 text-black",
-    "bg-pink-600 text-white",
-    "bg-indigo-600 text-white",
-    "bg-teal-600 text-white",
-    "bg-orange-600 text-white",
-    "bg-cyan-600 text-white",
+    "bg-blue-500 text-white",
+    "bg-purple-500 text-white",
+    "bg-green-500 text-white",
+    "bg-yellow-400 text-black",
+    "bg-pink-500 text-white",
+    "bg-indigo-500 text-white",
+    "bg-teal-500 text-white",
+    "bg-orange-500 text-white",
   ];
 
   function hashSubject(subject) {
@@ -166,6 +172,12 @@ export default function Planner() {
     return subjectColors[index];
   };
 
+  const isUrgentTask = (deadline) => {
+    const now = new Date();
+    const diff = (new Date(deadline) - now) / (1000 * 60 * 60);
+    return diff <= 24 && diff > 0;
+  };
+
   const getTaskForSlot = (dayObj, hour) => {
     return tasks.find((task) =>
       task.assignedSlots?.some(
@@ -176,71 +188,55 @@ export default function Planner() {
 
   const getTaskColor = (task) => {
     if (!task) return "";
-
-    if (isUrgentTask(task.deadline)) {
-      return "bg-red-600 text-white font-bold";
-    }
-
+    if (isUrgentTask(task.deadline))
+      return `${getSubjectColor(task.subject)} font-semibold`;
     return `${getSubjectColor(task.subject)} font-semibold`;
   };
 
-  // =============================
-  // REMINDER SYSTEM
-  // =============================
+  // ============================
+  // REMINDERS (unchanged)
+  // ============================
   useEffect(() => {
     const checkReminder = () => {
       const now = new Date();
-      const todayDate = now.toISOString().split("T")[0];
+      const today = now.toISOString().split("T")[0];
 
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
-
-      const nowMinutes = currentHour * 60 + currentMinute;
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
       tasks.forEach((task) => {
         task.assignedSlots?.forEach((slot) => {
-          if (slot.fullDate !== todayDate) return;
+          if (slot.fullDate !== today) return;
 
-          const startMinutes = slot.hour * 60;
-          const diff = startMinutes - nowMinutes;
+          const diff = slot.hour * 60 - nowMinutes;
 
-          // ✅ RANGE-BASED SYSTEM (prevents missed reminders)
-          const reminderWindows = [
-            { target: 60, range: 2 },
-            { target: 30, range: 2 },
-            { target: 5, range: 1 },
-            { target: 0, range: 1 },
+          const times = [
+            { t: 60, r: 2 },
+            { t: 30, r: 2 },
+            { t: 5, r: 1 },
+            { t: 0, r: 1 },
           ];
 
-          reminderWindows.forEach(({ target, range }) => {
-            if (diff <= target && diff >= target - range) {
-              const reminderKey = `${task._id}-${slot.fullDate}-${slot.hour}-${target}`;
+          times.forEach(({ t, r }) => {
+            if (diff <= t && diff >= t - r) {
+              const key = `${task._id}-${slot.hour}-${t}`;
+              if (shownReminders.current.has(key)) return;
 
-              if (shownReminders.current.has(reminderKey)) return;
-
-              shownReminders.current.add(reminderKey);
+              shownReminders.current.add(key);
 
               setReminderTask(task);
-              setMinutesLeft(target);
+              setMinutesLeft(t);
               setShowReminder(true);
-
-              // stop previous sound
-              if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
-              }
 
               const audio = new Audio(reminderSound);
               audioRef.current = audio;
-
-              audio.play().catch(() => console.log("Sound blocked"));
+              audio.play().catch(() => {});
 
               if (Notification.permission === "granted") {
                 new Notification("Study Reminder ⏰", {
                   body:
-                    target === 0
+                    t === 0
                       ? `${task.title} starts NOW!`
-                      : `${task.title} starts in ${target} minutes`,
+                      : `${task.title} starts in ${t} mins`,
                 });
               }
             }
@@ -250,140 +246,117 @@ export default function Planner() {
     };
 
     const interval = setInterval(checkReminder, 30000);
-
     return () => clearInterval(interval);
   }, [tasks]);
+
+  const closeReminder = () => {
+    setShowReminder(false);
+    if (audioRef.current) audioRef.current.pause();
+  };
 
   const bounceClass =
     guideCount < 2 && guideStep === "planner"
       ? "animate-bounce ring-4 ring-purple-300"
       : "";
 
-  const closeReminder = () => {
-    setShowReminder(false);
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-  };
-
+  // ============================
+  // UI
+  // ============================
   return (
-    <div className="min-h-screen bg-transparent p-4 pb-28">
-      <h1 className="text-2xl font-bold mb-2">Weekly Planner</h1>
+    <div className="min-h-screen p-4 pb-28 bg-gradient-to-br from-purple-50 to-blue-50">
+      <h1 className="text-2xl font-bold mb-2 text-gray-800">Weekly Planner</h1>
 
-      <p className="text-gray-600 mb-4 text-sm">
-        Your tasks are automatically placed into your schedule.
+      <p className="text-gray-600 text-sm mb-4">
+        Showing {preferredStudyTime} schedule
       </p>
 
       <button
         onClick={generateWeeklyPlan}
-        className={`w-full bg-purple-600 text-white px-4 py-3 rounded-2xl font-semibold hover:bg-purple-700 mb-5 shadow-lg ${bounceClass}`}
+        className={`w-full bg-purple-600 text-white py-3 rounded-2xl font-semibold shadow-md mb-5 ${bounceClass}`}
       >
         Generate Weekly Plan 🤖
       </button>
 
-      {/* MOBILE TIMETABLE VIEW */}
-      <div className="block md:hidden overflow-x-auto">
-        <div className="min-w-[650px] bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg border border-white/40 p-2">
-          {/* HEADER */}
-          <div className="grid grid-cols-8 text-xs font-bold text-center mb-2">
-            <div className="text-gray-600">Time</div>
-            {days.map((d) => (
-              <div key={d.fullDate} className="text-gray-700">
-                {d.dayName}
-              </div>
-            ))}
+      {/* ================= MOBILE VIEW ================= */}
+      <div className="md:hidden space-y-5">
+        {days.map((dayObj) => (
+          <div
+            key={dayObj.fullDate}
+            className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-md p-4 border border-white/50"
+          >
+            <h2 className="font-bold text-lg mb-3 text-gray-800">
+              {dayObj.fullLabel}
+            </h2>
+
+            <div className="space-y-3">
+              {hoursToShow.map((hour) => {
+                const task = getTaskForSlot(dayObj, hour);
+
+                return (
+                  <div
+                    key={hour}
+                    className={`flex justify-between items-center p-4 rounded-xl shadow-sm ${
+                      task ? getTaskColor(task) : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    <p className="font-bold text-base">{hour}:00</p>
+
+                    {task && (
+                      <div>
+                        <p className="text-sm font-bold">{task.title}</p>
+                        <p className="text-xs opacity-80">{task.subject}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-
-          {/* BODY */}
-          {Array.from({ length: 18 }).map((_, index) => {
-            const hour = index + 6;
-
-            return (
-              <div key={hour} className="grid grid-cols-8 text-[11px]">
-                {/* TIME COLUMN */}
-                <div className="border p-2 font-semibold bg-gray-100 text-center">
-                  {hour}:00
-                </div>
-
-                {/* DAYS */}
-                {days.map((dayObj) => {
-                  const task = getTaskForSlot(dayObj, hour);
-
-                  return (
-                    <div
-                      key={dayObj.fullDate + hour}
-                      className={`border p-2 text-center ${
-                        task
-                          ? `${getTaskColor(task)} rounded-md`
-                          : "bg-gray-50 text-gray-400"
-                      }`}
-                    >
-                      {task ? (
-                        <div className="leading-tight">
-                          <p className="font-bold text-[10px]">
-                            {task.title.length > 10
-                              ? task.title.slice(0, 10) + "…"
-                              : task.title}
-                          </p>
-                          <p className="text-[9px] opacity-80">
-                            {task.subject}
-                          </p>
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
+        ))}
       </div>
 
-      {/* LAPTOP VIEW */}
-      <div className="hidden md:block overflow-x-auto bg-white/70 backdrop-blur-lg rounded-2xl shadow-lg p-3 border border-white/50">
-        <table className="border-collapse w-full text-[12px] min-w-[900px]">
+      {/* ================= DESKTOP VIEW ================= */}
+      <div className="hidden md:block mt-6 overflow-x-auto">
+        <table className="w-full border-separate border-spacing-3">
           <thead>
-            <tr>
-              <th className="border p-2 bg-gray-200">Hour</th>
+            <tr className="text-gray-700">
+              <th className="p-4 text-sm font-semibold">Hour</th>
 
-              {days.map((dayObj) => (
-                <th key={dayObj.fullLabel} className="border p-2 bg-gray-200">
-                  {dayObj.fullLabel}
+              {days.map((d) => (
+                <th
+                  key={d.fullDate}
+                  className="p-4 text-sm font-semibold bg-gray-200 rounded-xl"
+                >
+                  {d.fullLabel}
                 </th>
               ))}
             </tr>
           </thead>
 
           <tbody>
-            {Array.from({ length: 24 }).map((_, hour) => (
-              <tr key={hour}>
-                <td className="border p-2 font-semibold bg-gray-50">
+            {hoursToShow.map((hour) => (
+              <tr key={hour} className="text-center">
+                {/* TIME */}
+                <td className="p-4 font-semibold bg-gray-100 rounded-xl">
                   {hour}:00
                 </td>
 
-                {days.map((dayObj) => {
-                  const task = getTaskForSlot(dayObj, hour);
+                {/* DAYS */}
+                {days.map((d) => {
+                  const task = getTaskForSlot(d, hour);
 
                   return (
                     <td
-                      key={dayObj.fullLabel + hour}
-                      className={`border p-2 text-center ${getTaskColor(task)}`}
+                      key={d.fullDate + hour}
+                      className={`p-4 rounded-xl shadow-sm transition ${
+                        task ? getTaskColor(task) : "bg-white/70 backdrop-blur"
+                      }`}
                     >
-                      {task ? (
+                      {task && (
                         <div>
-                          <p className="text-[11px] font-bold leading-tight">
-                            {task.title}
-                          </p>
-                          <p className="text-[10px] opacity-90 leading-tight">
-                            {task.subject}
-                          </p>
+                          <p className="text-sm font-bold">{task.title}</p>
+                          <p className="text-xs opacity-80">{task.subject}</p>
                         </div>
-                      ) : (
-                        ""
                       )}
                     </td>
                   );
@@ -393,7 +366,6 @@ export default function Planner() {
           </tbody>
         </table>
       </div>
-
       <BottomNav />
 
       {showReminder && (

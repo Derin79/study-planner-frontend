@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import deerImg from "../assets/deer.webp";
+import happyDeer from "../assets/deer/happy.mp4";
+import sadDeer from "../assets/deer/sad.mp4";
 
 export default function AvatarBuddy({ completed, missed, streak, urgent }) {
   const [message, setMessage] = useState("");
   const [visible, setVisible] = useState(false);
+  const [mood, setMood] = useState("happy");
 
   useEffect(() => {
     // ✅ Wait until motivation popup has already shown
@@ -32,7 +34,17 @@ export default function AvatarBuddy({ completed, missed, streak, urgent }) {
         "📌 You haven’t studied today. Even 15 minutes now is better than regret tonight.";
     }
 
+    let mood = "happy";
+
+    if (missed > 0 || urgent > 0) {
+      mood = "sad";
+    }
+
     setMessage(msg);
+    setMood(mood);
+
+    if (missed > 0) mood = "sad";
+    else if (urgent > 0) mood = "sad";
 
     const today = new Date().toISOString().split("T")[0];
     const lastShownDate = localStorage.getItem("buddyShownDate");
@@ -54,10 +66,13 @@ export default function AvatarBuddy({ completed, missed, streak, urgent }) {
   return (
     <div className="fixed bottom-24 right-5 z-40 w-80 max-w-[90%]">
       <div className="bg-white/80 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/40 p-4 flex gap-4 relative animate-slideIn">
-        <img
-          src={deerImg}
-          alt="Study Buddy"
-          className="w-16 h-16 object-contain"
+        <video
+          src={mood === "sad" ? sadDeer : happyDeer}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-16 h-16 object-contain rounded-lg"
         />
 
         <div className="flex-1">
