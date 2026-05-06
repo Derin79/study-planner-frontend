@@ -100,11 +100,6 @@ export default function Planner() {
 
       alert(res.data.message);
 
-      localStorage.setItem("guideStep", "timer");
-      if (count >= 2) {
-        localStorage.setItem("guideStep", "dashboard");
-      }
-
       let count = parseInt(localStorage.getItem("guideCount") || "0");
 
       if (count < 2) {
@@ -112,10 +107,12 @@ export default function Planner() {
         localStorage.setItem("guideCount", count.toString());
       }
 
+      // guide step logic
       if (count >= 2) {
-        localStorage.setItem("guideStep", "");
+        localStorage.setItem("guideStep", "dashboard");
         setGuideStep("");
       } else {
+        localStorage.setItem("guideStep", "timer");
         setGuideStep("timer");
       }
 
@@ -256,6 +253,20 @@ export default function Planner() {
 
     return () => clearInterval(interval);
   }, [tasks]);
+
+  const bounceClass =
+    guideCount < 2 && guideStep === "planner"
+      ? "animate-bounce ring-4 ring-purple-300"
+      : "";
+
+  const closeReminder = () => {
+    setShowReminder(false);
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-transparent p-4 pb-28">

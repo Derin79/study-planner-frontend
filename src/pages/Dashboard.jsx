@@ -38,17 +38,6 @@ export default function Dashboard() {
     navigate("/login");
   };
 
-  const enableNotifications = async () => {
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      new Notification("Notifications Enabled ✅", {
-        body: "You will now receive study reminders.",
-      });
-    } else {
-      alert("Notifications not allowed");
-    }
-  };
-
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -239,13 +228,6 @@ export default function Dashboard() {
           Welcome, <span className="font-semibold">{user.name}</span> 🎉
         </p>
       )}
-
-      <button
-        onClick={enableNotifications}
-        className="mt-5 bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-blue-700 shadow"
-      >
-        Enable Notifications
-      </button>
 
       <div className={`${glassCard} mt-6 max-w-md`}>
         <h2 className="font-bold text-lg">Freeze Count ❄️</h2>
