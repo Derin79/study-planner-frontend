@@ -264,7 +264,7 @@ export default function Planner() {
 
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current.currentTime = 0; // ✅ THIS is the missing part
+      audioRef.current.currentTime = 0;
     }
   };
 

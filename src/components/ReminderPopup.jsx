@@ -5,7 +5,7 @@ export default function ReminderPopup({ task, minutesLeft, onClose }) {
     // auto close after 10 seconds
     const timer = setTimeout(() => {
       onClose();
-    }, 10000);
+    }, 30000);
 
     return () => clearTimeout(timer);
   }, [onClose]);
