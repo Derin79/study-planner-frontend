@@ -16,22 +16,18 @@ export default function QuestRewardPopup({
     height: window.innerHeight,
   });
 
-  // ✅ FIX: get stop() too
   const [play, { stop }] = useSound(successSound, {
     volume: 0.7,
-    interrupt: true, // ✅ important
+    interrupt: true,
   });
 
   useEffect(() => {
-    // play sound
     play();
 
-    // stop confetti after 4 seconds
-    const timer = setTimeout(() => setShowConfetti(false), 4000);
-    audio.pause();
-    audio.currentTime = 0;
+    const timer = setTimeout(() => {
+      setShowConfetti(false);
+    }, 4000);
 
-    // resize confetti
     const handleResize = () => {
       setDimensions({
         width: window.innerWidth,
@@ -43,13 +39,13 @@ export default function QuestRewardPopup({
 
     return () => {
       clearTimeout(timer);
-      stop(); // ✅ stop sound when popup closes/unmounts
+      stop();
       window.removeEventListener("resize", handleResize);
     };
   }, [play, stop]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 px-4">
       {showConfetti && (
         <Confetti
           width={dimensions.width}
@@ -59,7 +55,7 @@ export default function QuestRewardPopup({
         />
       )}
 
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-[90%] max-w-md text-center animate-[fadeIn_0.4s_ease-in-out]">
+      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md text-center animate-[fadeIn_0.4s_ease-in-out]">
         <h1 className="text-2xl font-bold text-purple-700">
           Quest Completed! 🎉
         </h1>
@@ -82,7 +78,7 @@ export default function QuestRewardPopup({
 
         <button
           onClick={() => {
-            stop(); // ✅ stop immediately on button click
+            stop();
             onClose();
           }}
           className="mt-6 w-full bg-purple-600 text-white py-3 rounded-xl font-bold hover:bg-purple-700"
@@ -94,8 +90,15 @@ export default function QuestRewardPopup({
       <style>
         {`
           @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+              opacity: 0;
+              transform: scale(0.9);
+            }
+
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
           }
         `}
       </style>

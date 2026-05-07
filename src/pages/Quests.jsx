@@ -44,15 +44,20 @@ export default function Quests() {
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      // ✅ update quests instantly (no refresh needed)
+      // update quests instantly
       setData((prev) => ({
         ...prev,
         quests: prev.quests.map((q) =>
-          q.questId?._id === questId ? { ...q, completed: true } : q,
+          q.questId?._id === questId
+            ? {
+                ...q,
+                completed: true,
+              }
+            : q,
         ),
       }));
 
-      // ✅ show popup reward
+      // show popup FIRST
       setRewardData({
         rewardXP: res.data.rewardXP || 0,
         rewardPoints: res.data.rewardPoints || 0,
@@ -61,8 +66,7 @@ export default function Quests() {
 
       setShowRewardPopup(true);
 
-      // optional refresh to sync backend
-      fetchQuests();
+      // ❌ REMOVE fetchQuests() from here
     } catch (error) {
       setMessage(error.response?.data?.message || "Quest completion failed ❌");
     } finally {
