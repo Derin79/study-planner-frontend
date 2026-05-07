@@ -24,6 +24,10 @@ export default function App() {
     const token = localStorage.getItem("token");
     if (!token) return;
 
+    if ("Notification" in window) {
+      Notification.requestPermission();
+    }
+
     const sendNotification = (title, body) => {
       if (Notification.permission === "granted") {
         new Notification(title, { body });
@@ -48,6 +52,7 @@ export default function App() {
             if (!slot.fullDate) return;
 
             const slotTime = new Date(slot.fullDate);
+            slotTime.setHours(slot.hour, 0, 0, 0);
             const diffMinutes = Math.round((slotTime - now) / 60000);
 
             const notifyKey = `notified_${task._id}_${slot.fullDate}`;
@@ -56,7 +61,7 @@ export default function App() {
             if (localStorage.getItem(notifyKey)) return;
 
             // 60 min reminder
-            if (diffMinutes === 60) {
+            if (diffMinutes <= 60 && diffMinutes >= 59) {
               sendNotification(
                 "📚 Study Reminder (1 hour)",
                 `Your task "${task.title}" starts in 1 hour.`,
@@ -65,7 +70,7 @@ export default function App() {
             }
 
             // 30 min reminder
-            if (diffMinutes === 30) {
+            if (diffMinutes <= 30 && diffMinutes >= 29) {
               sendNotification(
                 "⏳ Study Reminder (30 mins)",
                 `Your task "${task.title}" starts in 30 minutes.`,
@@ -74,7 +79,7 @@ export default function App() {
             }
 
             // 5 min reminder
-            if (diffMinutes === 5) {
+            if (diffMinutes <= 5 && diffMinutes >= 4) {
               sendNotification(
                 "🚨 Study Reminder (5 mins)",
                 `Your task "${task.title}" starts in 5 minutes. Get ready!`,

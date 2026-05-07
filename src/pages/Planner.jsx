@@ -96,6 +96,10 @@ export default function Planner() {
   useEffect(() => {
     fetchTasks();
 
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
     const interval = setInterval(() => {
       setGuideStep(localStorage.getItem("guideStep") || "");
       setGuideCount(parseInt(localStorage.getItem("guideCount") || "0"));
@@ -193,6 +197,12 @@ export default function Planner() {
     return `${getSubjectColor(task.subject)} font-semibold`;
   };
 
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }, []);
+
   // ============================
   // REMINDERS (unchanged)
   // ============================
@@ -245,13 +255,17 @@ export default function Planner() {
       });
     };
 
-    const interval = setInterval(checkReminder, 30000);
+    const interval = setInterval(checkReminder, 10000);
     return () => clearInterval(interval);
   }, [tasks]);
 
   const closeReminder = () => {
     setShowReminder(false);
-    if (audioRef.current) audioRef.current.pause();
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0; // ✅ THIS is the missing part
+    }
   };
 
   const bounceClass =

@@ -16,19 +16,20 @@ export default function QuestRewardPopup({
     height: window.innerHeight,
   });
 
-  const [play] = useSound(successSound, {
+  // ✅ FIX: get stop() too
+  const [play, { stop }] = useSound(successSound, {
     volume: 0.7,
-    interrupt: true,
+    interrupt: true, // ✅ important
   });
 
   useEffect(() => {
     // play sound
-    const soundTimer = setTimeout(() => {
-      play();
-    }, 200);
+    play();
 
     // stop confetti after 4 seconds
     const timer = setTimeout(() => setShowConfetti(false), 4000);
+    audio.pause();
+    audio.currentTime = 0;
 
     // resize confetti
     const handleResize = () => {
@@ -42,10 +43,10 @@ export default function QuestRewardPopup({
 
     return () => {
       clearTimeout(timer);
-      clearTimeout(soundTimer);
+      stop(); // ✅ stop sound when popup closes/unmounts
       window.removeEventListener("resize", handleResize);
     };
-  }, [play]);
+  }, [play, stop]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
@@ -80,7 +81,10 @@ export default function QuestRewardPopup({
         </div>
 
         <button
-          onClick={onClose}
+          onClick={() => {
+            stop(); // ✅ stop immediately on button click
+            onClose();
+          }}
           className="mt-6 w-full bg-purple-600 text-white py-3 rounded-xl font-bold hover:bg-purple-700"
         >
           Continue 🚀

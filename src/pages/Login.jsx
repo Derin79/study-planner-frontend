@@ -66,9 +66,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-2">
-          Deer Dawn Planner
-        </h1>
+        <h1 className="text-2xl font-bold text-center mb-2">Deer Planner</h1>
         <p className="text-gray-500 text-center mb-6">Login to continue</p>
 
         {message && (

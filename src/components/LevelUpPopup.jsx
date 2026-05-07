@@ -2,6 +2,7 @@ import Confetti from "react-confetti";
 import { useEffect, useState } from "react";
 import useSound from "use-sound";
 import successSound from "../assets/success.mp3";
+import happyDeer from "../assets/deer/happy.mp4";
 
 export default function LevelUpPopup({ level, onClose }) {
   const [showConfetti, setShowConfetti] = useState(true);
@@ -52,8 +53,14 @@ export default function LevelUpPopup({ level, onClose }) {
           You reached Level {level}!
         </p>
 
-        <div className="text-7xl mt-6 animate-[pop_0.6s_ease-in-out]">🦌🏅</div>
-
+        <video
+          src={happyDeer}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-32 h-32 mx-auto object-contain"
+        />
         <p className="text-gray-500 mt-4 font-semibold">
           Your deer buddy is proud of you 💜
         </p>
