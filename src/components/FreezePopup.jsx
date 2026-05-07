@@ -2,6 +2,7 @@ import Confetti from "react-confetti";
 import { useEffect, useState } from "react";
 import useSound from "use-sound";
 import freezeSound from "../assets/freeze.mp3";
+import deer2 from "../assets/deer2.png";
 
 export default function FreezePopup({ onClose }) {
   const [showConfetti, setShowConfetti] = useState(true);
@@ -46,7 +47,13 @@ export default function FreezePopup({ onClose }) {
           Your streak was protected!
         </p>
 
-        <div className="text-7xl mt-6">🦌❄️🔥</div>
+        <div className="mt-6 flex items-center justify-center gap-3">
+          <span className="text-4xl">❄️</span>
+
+          <img src={deer2} alt="Deer" className="w-28 h-28 object-contain" />
+
+          <span className="text-4xl">🔥</span>
+        </div>
 
         <p className="text-gray-500 mt-4 font-semibold">
           Even though you missed a day, your streak is safe 💜

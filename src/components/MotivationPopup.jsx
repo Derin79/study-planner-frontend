@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import deer2 from "../assets/deer2.png";
 
 export default function MotivationPopup({
   name,
@@ -88,7 +89,17 @@ export default function MotivationPopup({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
       <div className="bg-white/80 backdrop-blur-xl w-full max-w-md p-6 rounded-2xl shadow-2xl border border-white/40 animate-[pop_0.4s_ease-in-out]">
-        <h2 className="text-xl font-bold text-purple-700">Hey {name}! 🦌✨</h2>
+        <h2 className="text-xl font-bold text-purple-700 flex items-center justify-center gap-2">
+  Hey {name}!
+
+  <img
+    src={deer2}
+    alt="Deer"
+    className="w-8 h-8 object-contain"
+  />
+
+  ✨
+</h2>
 
         <p className="text-gray-800 mt-3 font-semibold text-lg leading-snug">
           {quote}
