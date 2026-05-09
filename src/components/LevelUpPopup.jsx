@@ -59,7 +59,7 @@ export default function LevelUpPopup({ level, onClose }) {
           loop
           muted
           playsInline
-          className="w-32 h-32 mx-auto object-contain"
+          className="w-52 h-52 mx-auto object-contain rounded-2xl"
         />
         <p className="text-gray-500 mt-4 font-semibold">
           Your deer buddy is proud of you 💜

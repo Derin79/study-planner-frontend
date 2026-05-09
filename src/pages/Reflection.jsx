@@ -71,14 +71,14 @@ export default function Reflection() {
         return;
       }
 
-      if (badge) {
-        setNewBadge(badge);
-        return;
-      }
-
       if (level !== null) {
         setNewLevel(level);
         setShowLevelUp(true);
+        return;
+      }
+
+      if (badge) {
+        setNewBadge(badge);
         return;
       }
 
@@ -160,7 +160,12 @@ export default function Reflection() {
       {showFreezePopup && (
         <FreezePopup
           onClose={() => {
-            setShowFreezePopup(false);
+            setShowLevelUp(false);
+
+            if (newBadge) {
+              return;
+            }
+
             navigate("/dashboard");
           }}
         />
