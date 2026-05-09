@@ -12,7 +12,10 @@ export default function FreezePopup({ onClose }) {
     height: window.innerHeight,
   });
 
-  const [play] = useSound(freezeSound, { volume: 0.8 });
+  const [play, { stop }] = useSound(freezeSound, {
+    volume: 0.8,
+    interrupt: true,
+  });
 
   useEffect(() => {
     play(); // ✅ play freeze sound once popup appears
@@ -30,6 +33,7 @@ export default function FreezePopup({ onClose }) {
 
     return () => {
       clearTimeout(timer);
+      stop();
       window.removeEventListener("resize", handleResize);
     };
   }, [play]);
@@ -60,7 +64,10 @@ export default function FreezePopup({ onClose }) {
         </p>
 
         <button
-          onClick={onClose}
+          onClick={() => {
+            stop();
+            onClose();
+          }}
           className="mt-6 w-full bg-cyan-600 text-white py-3 rounded-xl font-bold hover:bg-cyan-700"
         >
           Continue 🚀

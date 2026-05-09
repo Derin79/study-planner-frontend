@@ -10,9 +10,32 @@ export default function Achievements() {
   const [streak, setStreak] = useState(0);
 
   const badgeCatalog = [
-    { name: "50 Points Badge", requirement: "Reach 50 points", icon: "🥉" },
-    { name: "100 Points Badge", requirement: "Reach 100 points", icon: "🥈" },
-    { name: "200 Points Badge", requirement: "Reach 200 points", icon: "🥇" },
+    {
+      name: "10 Points Badge",
+      requirement: "Reach 10 points",
+      icon: "⭐",
+    },
+    {
+      name: "50 Points Badge",
+      requirement: "Reach 50 points",
+      icon: "🥉",
+    },
+    {
+      name: "100 Points Badge",
+      requirement: "Reach 100 points",
+      icon: "🥈",
+    },
+    {
+      name: "200 Points Badge",
+      requirement: "Reach 200 points",
+      icon: "🥇",
+    },
+    {
+      name: "500 Points Master",
+      requirement: "Reach 500 points",
+      icon: "👑",
+    },
+
     {
       name: "3 Day Streak Badge",
       requirement: "Maintain 3-day streak",
@@ -23,8 +46,53 @@ export default function Achievements() {
       requirement: "Maintain 7-day streak",
       icon: "⚡",
     },
-    { name: "Level 5 Badge", requirement: "Reach Level 5", icon: "🚀" },
-    { name: "Level 10 Badge", requirement: "Reach Level 10", icon: "👑" },
+    {
+      name: "14 Day Streak Badge",
+      requirement: "Maintain 14-day streak",
+      icon: "💎",
+    },
+    {
+      name: "30 Day Streak Legend",
+      requirement: "Maintain 30-day streak",
+      icon: "🏆",
+    },
+
+    {
+      name: "Level 5 Badge",
+      requirement: "Reach Level 5",
+      icon: "🚀",
+    },
+    {
+      name: "Level 10 Badge",
+      requirement: "Reach Level 10",
+      icon: "👑",
+    },
+    {
+      name: "Level 20 Legend",
+      requirement: "Reach Level 20",
+      icon: "🌟",
+    },
+
+    {
+      name: "Task Crusher",
+      requirement: "Complete 25 tasks",
+      icon: "✅",
+    },
+    {
+      name: "Study Warrior",
+      requirement: "Complete 50 tasks",
+      icon: "⚔️",
+    },
+    {
+      name: "Focus Master",
+      requirement: "Study for 10 hours",
+      icon: "🧠",
+    },
+    {
+      name: "Time Lord",
+      requirement: "Study for 50 hours",
+      icon: "⏰",
+    },
   ];
 
   const fetchProfile = async () => {
@@ -69,7 +137,7 @@ export default function Achievements() {
   };
 
   return (
-    <div className="min-h-screen p-4 pb-28">
+    <div className="min-h-screen bg-transparent p-4 pb-28">
       <h1 className="text-2xl font-bold mb-2">Achievements 🏆</h1>
       <p className="text-gray-600 mb-6">
         Level {level} • {xp} XP • {points} Points • {streak} Streak 🔥
@@ -90,10 +158,10 @@ export default function Achievements() {
               }`}
             >
               <div className="flex items-center gap-4">
-                <div className="text-4xl">{badge.icon}</div>
+                <div className="text-6xl">{badge.icon}</div>
 
                 <div>
-                  <h2 className="font-bold text-lg">{badge.name}</h2>
+                  <h2 className="font-bold text-xl">{badge.name}</h2>
                   <p className="text-gray-600 text-sm">{badge.requirement}</p>
                 </div>
               </div>
