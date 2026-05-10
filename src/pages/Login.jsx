@@ -30,6 +30,14 @@ export default function Login() {
         headers: { Authorization: `Bearer ${res.data.token}` },
       });
 
+      // ✅ Always sync planner preference on login
+      if (prefRes.data?.preferredStudyTime) {
+        localStorage.setItem(
+          "preferredStudyTime",
+          prefRes.data.preferredStudyTime,
+        );
+      }
+
       // ✅ If no onboarding preferences, go onboarding
       if (!prefRes.data || prefRes.data === null) {
         // localStorage.setItem("firstTimeUser", "true");

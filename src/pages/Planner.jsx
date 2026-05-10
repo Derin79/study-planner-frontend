@@ -39,7 +39,7 @@ export default function Planner() {
 
   const hoursToShow = [];
 
-  for (let h = startPref; h <= endPref; h++) {
+  for (let h = startPref; h <= endPref; h += 1) {
     hoursToShow.push(h);
   }
 
