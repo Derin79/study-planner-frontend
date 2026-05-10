@@ -26,9 +26,9 @@ export default function Planner() {
   // SMART TIME RANGE SYSTEM 🔥
   // ============================
   const timeRanges = {
-    morning: [6, 12],
-    afternoon: [12, 17],
-    evening: [17, 21],
+    morning: [6, 11],
+    afternoon: [12, 16],
+    evening: [17, 20],
     night: [21, 23],
   };
 
